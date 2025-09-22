@@ -7,12 +7,14 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const client_1 = require("@prisma/client");
 const boleto_routes_1 = __importDefault(require("./routes/boleto.routes"));
+const auth_routes_1 = __importDefault(require("./routes/auth.routes")); // <-- IMPORTA ESTA LÍNEA
 const app = (0, express_1.default)();
 const prisma = new client_1.PrismaClient();
 const PORT = process.env.PORT || 2121;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use('/boletos', boleto_routes_1.default);
+app.use('/auth', auth_routes_1.default);
 app.listen(PORT, () => {
     console.log(`Servidor conectado ${PORT}`);
 });
