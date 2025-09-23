@@ -1,6 +1,6 @@
-import e, { Request, Response, NextFunction } from 'express';
+// src/middlewares/autorizacion.middleware.ts
+import { Request, Response, NextFunction } from 'express';
 
-// Reutilizando la interfaz AuthenticatedRequest del paso anterior
 interface AuthenticatedRequest extends Request {
     user?: {
         id: number;
@@ -10,12 +10,12 @@ interface AuthenticatedRequest extends Request {
 
 export const authorizeRoles = (requiredRoles: string[]) => {
     return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-        // Verifica si el usuario tiene al menos uno de los roles requeridos
-        if (!req.user || !requiredRoles.includes(req.user.role)) {
+        // 🚨 Normaliza el rol del token a mayúsculas antes de la comparación
+        const userRole = req.user?.role.toUpperCase();
+        
+        if (!req.user || !userRole || !requiredRoles.includes(userRole)) {
             return res.status(403).json({ error: "No tienes permiso para realizar esta acción." });
         }
         next();
     };
 };
-
-export default authorizeRoles;
