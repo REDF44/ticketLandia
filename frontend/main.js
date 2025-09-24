@@ -1,5 +1,5 @@
 const BACKEND_URL = 'http://localhost:2121';
-const OPENWEATHER_API_KEY = 'f8bd51fa1441d78e375782bb8f641b28'; // ¡Reemplaza esto con tu clave de API!
+const OPENWEATHER_API_KEY = 'f8bd'; // ¡Reemplaza esto con tu clave de API!
 const OPENWEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 
 // Espera a que el documento HTML esté completamente cargado antes de ejecutar el código.

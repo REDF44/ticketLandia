@@ -1,4 +1,4 @@
-// src/controllers/weather.controller.ts
+
 import { Request, Response } from 'express';
 import axios from 'axios';
 
