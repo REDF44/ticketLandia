@@ -1,20 +1,21 @@
 const BACKEND_URL = 'http://localhost:2121';
+const OPENWEATHER_API_KEY = 'f8bd51fa1441d78e375782bb8f641b28'; // ¡Reemplaza esto con tu clave de API!
+const OPENWEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 
 // Espera a que el documento HTML esté completamente cargado antes de ejecutar el código.
 document.addEventListener('DOMContentLoaded', () => {
-    // Referencia al contenedor de mensajes para mostrar errores o notificaciones
     const messageContainer = document.getElementById('message-container');
     const token = localStorage.getItem('token');
 
-    // Muestra un mensaje de carga mientras se obtienen los boletos
     if (messageContainer) {
         messageContainer.innerHTML = '<div class="alert alert-info" role="alert">Cargando boletos...</div>';
     }
 
     if (token) {
         fetchBoletos(token);
+        // Llama a la función del clima con la ciudad que desees.
+        fetchWeather('Asuncion');
     } else {
-        // Redirige si no hay token (usuario no autenticado)
         window.location.href = 'login.html';
     }
 });
@@ -33,28 +34,24 @@ async function fetchBoletos(token) {
         });
 
         if (!response.ok) {
-            // Intenta leer el error del cuerpo de la respuesta
             const errorData = await response.json();
-            throw new Error(errorData.error || `Error al obtener los boletos. Código de estado: ${response.status}`);
+            throw new Error(errorData.error || 'No se pudo obtener la lista de boletos.');
         }
 
         const boletos = await response.json();
         renderBoletos(boletos);
         
-        // Limpiar el mensaje de carga una vez que los datos son renderizados
         if (messageContainer) {
             messageContainer.innerHTML = '';
         }
 
     } catch (error) {
         console.error('Error al obtener los boletos:', error);
-        // Mostrar un mensaje de error en la interfaz de usuario
         if (messageContainer) {
-            messageContainer.innerHTML = `<div class="alert alert-danger" role="alert">${error.message}</div>`;
+            messageContainer.innerHTML = `<div class="alert alert-danger" role="alert">Error: ${error.message}</div>`;
         }
-        // Si no se puede renderizar la tabla por el error, se muestra un mensaje de error en la tabla misma
         if (boletosTabla) {
-             boletosTabla.innerHTML = `<tr><td colspan="6" class="text-danger">${error.message}</td></tr>`;
+            boletosTabla.innerHTML = `<tr><td colspan="6" class="text-danger">${error.message}</td></tr>`;
         }
     }
 }
@@ -82,4 +79,52 @@ function renderBoletos(boletos) {
         `;
         tabla.appendChild(fila);
     });
+}
+
+// ------------------- Funciones para el clima -------------------
+
+async function fetchWeather(ciudad) {
+    const weatherContainer = document.getElementById('weather-container');
+    if (!weatherContainer) return;
+    
+    weatherContainer.innerHTML = '<p>Cargando datos del clima...</p>';
+
+    try {
+        const response = await fetch(`${OPENWEATHER_URL}?q=${ciudad}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=es`);
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'No se pudo obtener el clima.');
+        }
+
+        const data = await response.json();
+        renderWeather(data);
+    } catch (error) {
+        console.error('Error al obtener el clima:', error.message);
+        if (weatherContainer) {
+            weatherContainer.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
+        }
+    }
+}
+
+function renderWeather(data) {
+    const weatherContainer = document.getElementById('weather-container');
+    if (!weatherContainer) return;
+
+    const { name, main, weather } = data;
+    const temp = Math.round(main.temp);
+    const description = weather[0].description;
+    const iconCode = weather[0].icon;
+    const iconUrl = `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+
+    weatherContainer.innerHTML = `
+        <div class="d-flex align-items-center">
+            <img src="${iconUrl}" alt="${description}">
+            <div>
+                <h4 class="mb-0">${name}</h4>
+                <p class="mb-0">${description}</p>
+                <p class="mb-0 fs-4">${temp}°C</p>
+            </div>
+        </div>
+    `;
 }
