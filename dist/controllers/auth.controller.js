@@ -34,19 +34,24 @@ const login = async (req, res) => {
 exports.login = login;
 const register = async (req, res) => {
     const { email, password, role } = req.body;
+    // 🚨 Añadir estas verificaciones para ver qué está fallando 🚨
+    if (!role) {
+        return res.status(400).json({ error: 'El campo role es obligatorio.' });
+    }
+    if (!email) {
+        return res.status(400).json({ error: 'El campo email es obligatorio.' });
+    }
+    if (!password) {
+        return res.status(400).json({ error: 'El campo password es obligatorio.' });
+    }
+    // La línea 44 está aquí, ahora 'username' no debería ser undefined
     try {
-        const existingUser = await prisma.usuario.findUnique({ where: { email } });
-        if (existingUser) {
-            return res.status(400).json({ error: 'El usuario ya existe' });
-        }
         const hashedPassword = await bcrypt_1.default.hash(password, 10);
-        // 🚨 Normaliza el rol a mayúsculas antes de guardarlo
-        const normalizedRole = role.toUpperCase();
         const newUser = await prisma.usuario.create({
             data: {
                 email,
                 contrasenha: hashedPassword,
-                role: normalizedRole
+                role: role.toUpperCase()
             }
         });
         res.status(201).json({ user: { id: newUser.id, email: newUser.email, role: newUser.role } });

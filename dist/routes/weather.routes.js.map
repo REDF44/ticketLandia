@@ -1,1 +1,1 @@
-{"version":3,"file":"weather.routes.js","sourceRoot":"","sources":["../../src/routes/weather.routes.ts"],"names":[],"mappings":";;AAAA,+BAA+B;AAC/B,qCAAiC;AACjC,0EAAqE;AAErE,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,MAAM,CAAC,GAAG,CAAC,cAAc,EAAE,qCAAgB,CAAC,CAAC;AAE7C,kBAAe,MAAM,CAAC"}
+{"version":3,"file":"weather.routes.js","sourceRoot":"","sources":["../../src/routes/weather.routes.ts"],"names":[],"mappings":";;AACA,qCAAiC;AACjC,0EAAqE;AAErE,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,MAAM,CAAC,GAAG,CAAC,cAAc,EAAE,qCAAgB,CAAC,CAAC;AAE7C,kBAAe,MAAM,CAAC"}
